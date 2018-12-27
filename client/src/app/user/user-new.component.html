@@ -1,0 +1,64 @@
+<div class="g-user-new">
+    <form nz-form [formGroup]="validateForm" novalidate (ngSubmit)="submitForm($event,validateForm.value)" style="border: none;">
+        <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="6" nzRequired>用户名</nz-form-label>
+            <nz-form-control [nzSpan]="18" nzHasFeedback>
+                <input nz-input formControlName="username" placeholder="用户名">
+                <nz-form-explain *ngIf="validateForm.get('username').dirty && validateForm.get('username').errors ">
+                    <ng-container *ngIf="validateForm.get('username').hasError('required')">
+                        这是必填字段
+                    </ng-container>
+                    <ng-container *ngIf="validateForm.get('username').hasError('duplicated')">
+                        该用户名已存在
+                    </ng-container>
+                </nz-form-explain>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="6" nzRequired>密码</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+                <nz-form-text>123456（初始密码）</nz-form-text>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="6">有效期</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+                <nz-range-picker [nzShowTime]="{ nzFormat: 'HH:mm:ss' }" nzFormat="yyyy-MM-dd HH:mm:ss" [nzPlaceHolder]="[ 'Start Time', 'End Time' ]"
+                    formControlName="dateRange"></nz-range-picker>
+            </nz-form-control>
+        </nz-form-item>
+        <!-- <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="7" nzRequired>邮箱</nz-form-label>
+            <nz-form-control [nzSpan]="15" nzHasFeedback>
+                <input nz-input formControlName="email" placeholder="邮箱" type="email">
+                <nz-form-explain *ngIf="validateForm.get('email').dirty&&validateForm.get('email').errors">
+                    <ng-container *ngIf="validateForm.get('email').hasError('email')">
+                        这不是一个有效的邮箱
+                    </ng-container>
+                    <ng-container *ngIf="validateForm.get('email').hasError('duplicated')">
+                        该邮箱已注册过
+                    </ng-container>
+                </nz-form-explain>
+            </nz-form-control>
+        </nz-form-item> -->
+        <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="6">姓名</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+                <input nz-input type="text" formControlName="realname" placeholder="真实姓名">
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nzFlex>
+            <nz-form-label [nzSpan]="6">是否启用</nz-form-label>
+            <nz-form-control [nzSpan]="18">
+                <nz-switch formControlName="status"></nz-switch>
+            </nz-form-control>
+        </nz-form-item>
+        <nz-form-item nzFlex>
+            <div style="width:22%;"></div>
+            <nz-form-control>
+                <button nz-button nzType="primary" [disabled]="!validateForm.valid">提交</button>
+                <!-- <button nz-button (click)="resetForm($event)">重置</button> -->
+            </nz-form-control>
+        </nz-form-item>
+    </form>
+</div>

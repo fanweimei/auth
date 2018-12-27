@@ -1,0 +1,84 @@
+<div class="g-menu">
+    <div *ngIf="canEdit" class="action-btn" style="display: flex; justify-content: center; margin-bottom: 10px;">
+        <nz-dropdown>
+            <button nz-button nz-dropdown nzType="primary">
+                <span>添加</span>
+                <i nz-icon type="down"></i>
+            </button>
+            <ul nz-menu>
+                <li nz-menu-item (click)="showMenuNewPanel('module')">添加模块</li>
+                <li nz-menu-item (click)="showMenuNewPanel('page')">添加页面</li>
+            </ul>
+        </nz-dropdown>
+    </div>
+    <nz-table #nzTable [nzData]="list">
+        <thead>
+            <tr>
+                <th>名称</th>
+                <th>类别</th>
+                <th>标识符</th>
+                <th>图标</th>
+                <th>序号</th>
+                <th>前端路由</th>
+                <!-- <th>模块路径</th>
+                <th>类名/标识</th> -->
+                <th>备注</th>
+                <th *ngIf="canEdit||canDelete">操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            <ng-template ngFor let-data [ngForOf]="nzTable.data">
+                <ng-template ngFor let-item [ngForOf]="expandDataCache[data.id]">
+                    <tr *ngIf="(item.parent&&item.parent.expand)||!(item.parent)">
+                        <td [nzIndentSize]="item.level*20" [nzShowExpand]="!!item.children && item.children.length>0"
+                            [(nzExpand)]="item.expand" (nzExpandChange)="collapse(expandDataCache[data.id],item,$event)">
+                            {{item.name}}
+                        </td>
+                        <td>{{item.type}}</td>
+                        <td>{{item.key}}</td>
+                        <td>{{item.icon|dealtable}}</td>
+                        <td>{{item.sequence|dealtable}}</td>
+                        <td>{{item.routepath|dealtable}}</td>
+                        <td>{{item.remark|dealtable}}</td>
+                        <!-- <td>{{item.modulepath|dealtable}}</td>
+                        <td>{{item.classname|dealtable}}</td> -->
+                        <td *ngIf="canEdit||canDelete">
+                            <nz-dropdown nzPlacement="bottomRight">
+                                <a nz-dropdown>
+                                    <i nz-icon type="bars"></i>
+                                </a>
+                                <ul nz-menu nzSelectable>
+                                    <li *ngIf="item.type=='module'&&canEdit" nz-menu-item (click)="showMenuNewPanel('module', item.id, expandDataCache[data.id])">
+                                        <a>添加模块</a>
+                                    </li>
+                                    <li *ngIf="item.type!='fn'&&canEdit" nz-menu-item (click)="showMenuNewPanel('page', item.id, expandDataCache[data.id])">
+                                        <a>添加页面</a>
+                                    </li>
+                                    <li *ngIf="item.type!='module'&&canEdit" nz-menu-item (click)="showMenuNewPanel('fn', item.id, expandDataCache[data.id])">
+                                        <a>添加功能</a>
+                                    </li>
+                                    <li *ngIf="canEdit" nz-menu-divider></li>
+                                    <li nz-menu-item *ngIf="canEdit" (click)="showMenuNewPanel(item.type, item.pid, expandDataCache[data.id], item)">
+                                        <a>编辑</a>
+                                    </li>
+                                    <li *ngIf="canDelete" nz-menu-item (click)="delete(item)">
+                                        <a>删除</a>
+                                    </li>
+                                </ul>
+                            </nz-dropdown>
+                        </td>
+                    </tr>
+                </ng-template>
+            </ng-template>
+        </tbody>
+    </nz-table>
+
+    <div class="menu-tip">
+        <span>注意：</span>
+        <ol>
+            <li>请不要随意添加不存在的菜单</li>
+            <li>模块中的路由与菜单项中的路由要保持一致</li>
+            <li>配置文件中的key值配置与菜单项中的key要保持一致</li>
+        </ol>
+    </div>
+</div>

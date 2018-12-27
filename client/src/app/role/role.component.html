@@ -1,0 +1,34 @@
+<div class="action-btn" style="display: flex; justify-content: center; margin-bottom: 10px;">
+    <button *ngIf="canEdit" nz-button nzType="primary" (click)="addRole(null)">
+        添加新的角色
+    </button>
+</div>
+<nz-table #basicTable [nzData]="roleList" nzShowSizeChanger [nzFrontPagination]="false" [nzData]="userList" [nzLoading]="loading"
+    [nzTotal]="total" [(nzPageIndex)]="page" [(nzPageSize)]="pageSize" (nzPageIndexChange)="requestRoles()"
+    (nzPageSizeChange)="requestRoles(true)" [nzShowTotal]="totalTemplate">
+    <thead>
+        <tr>
+            <th>角色名</th>
+            <th *ngIf="canDelete || canEdit || canAddAuth || canAddUser">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of basicTable.data">
+            <td>{{ item.name }}</td>
+            <td *ngIf="canDelete || canEdit || canAddAuth || canAddUser">
+                <a *ngIf="canAddAuth" (click)="setResMap(item)">设置权限</a>
+                <nz-divider *ngIf="canAddUser" nzType="vertical"></nz-divider>
+                <a *ngIf="canAddUser" (click)="setUser(item)">指派用户</a>
+                <nz-divider *ngIf="canEdit" nzType="vertical"></nz-divider>
+                <a *ngIf="canEdit" (click)="addRole(item)">编辑</a>
+                <nz-divider *ngIf="canDelete" nzType="vertical"></nz-divider>
+                <nz-popconfirm *ngIf="canDelete" [nzTitle]="'确定删除这条记录吗?'" (nzOnConfirm)="delRole(item)">
+                    <a nz-popconfirm>删除</a>
+                </nz-popconfirm>
+            </td>
+        </tr>
+    </tbody>
+    <ng-template #totalTemplate let-range="range" let-total>
+        {{range[0]}}-{{range[1]}} 中 {{total}}条记录
+    </ng-template>
+</nz-table>

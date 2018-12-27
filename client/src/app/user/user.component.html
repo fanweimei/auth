@@ -1,0 +1,44 @@
+<div class="action-btn" style="display: flex; justify-content: center; margin-bottom: 10px;">
+    <button *ngIf="canEdit" nz-button nzType="primary" (click)="addUser('-1')">
+        添加新的用户
+    </button>
+</div>
+<nz-table #basicTable nzShowSizeChanger [nzFrontPagination]="false" [nzData]="userList" [nzLoading]="loading" [nzTotal]="total"
+    [(nzPageIndex)]="page" [(nzPageSize)]="pageSize" (nzPageIndexChange)="requestUsers()" (nzPageSizeChange)="requestUsers(true)"
+    [nzShowTotal]="totalTemplate">
+    <thead>
+        <tr>
+            <th>用户名</th>
+            <!-- <th>邮箱</th> -->
+            <th>姓名</th>
+            <th>开始时间</th>
+            <th>结束时间</th>
+            <th>用户状态</th>
+            <th *ngIf="canDelete || canEdit">操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of basicTable.data">
+            <td>{{ item.username }}</td>
+            <!-- <td>{{ item.email  }}</td> -->
+            <td>{{ item.realname | dealtable }}</td>
+            <td>{{ item.startDate | date:"yyyy-MM-dd HH:mm:ss" |dealtable }}</td>
+            <td>{{ item.endDate | date:"yyyy-MM-dd HH:mm:s"|dealtable }}</td>
+            <td>{{ item.enable ? '可用' : '禁用' }}</td>
+            <td *ngIf="canDelete || canEdit">
+                <a *ngIf="canEdit" (click)="addUser(item)">编辑</a>
+                <nz-divider *ngIf="canEdit" nzType="vertical"></nz-divider>
+                <nz-popconfirm *ngIf="canDelete" [nzTitle]="'确定删除这条记录吗?'" (nzOnConfirm)="delUser(item)">
+                    <a nz-popconfirm>删除</a>
+                </nz-popconfirm>
+                <nz-divider *ngIf="canDelete" nzType="vertical"></nz-divider>
+                <nz-popconfirm *ngIf="canEdit" [nzTitle]="'确定要重置密码吗?'" (nzOnConfirm)="resetPass(item)">
+                    <a nz-popconfirm>重置密码</a>
+                </nz-popconfirm>
+            </td>
+        </tr>
+    </tbody>
+    <ng-template #totalTemplate let-range="range" let-total>
+        {{range[0]}}-{{range[1]}} 中 {{total}}条记录
+    </ng-template>
+</nz-table>

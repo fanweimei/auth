@@ -1,0 +1,50 @@
+<nz-layout style="width: 100%; height: 100%;">
+  <nz-sider nzCollapsible [(nzCollapsed)]="isCollapsed" [nzTrigger]="triggerTemplate">
+    <div class="logo"></div>
+    <ul nz-menu [nzTheme]="'dark'" [nzMode]="'inline'" [nzInlineCollapsed]="isCollapsed">
+      <li nz-menu-item *ngFor="let item of menus" nz-menu-item [nzSelected]="item.selected">
+        <a [routerLink]="item.path">
+          <i nz-icon [type]="item.icon"></i>
+          <span class="nav-text">{{item.label}}</span>
+        </a>
+      </li>
+    </ul>
+  </nz-sider>
+  <nz-layout>
+    <nz-header style="background: #fff; padding:0;">
+      <i class="trigger" nz-icon [type]="isCollapsed?'menu-unfold':'menu-fold'" (click)="isCollapsed=!isCollapsed"></i>
+      <nz-dropdown>
+        <div nz-dropdown class="user-info">
+          <nz-avatar nzSrc="./assets/avatar.jpg"></nz-avatar>
+          {{username}}
+        </div>
+        <ul nz-menu nzSelectable>
+          <li nz-menu-item (click)="modifyPass()">
+            <a><i nz-icon type="key" style="margin-right: 10px;"></i>修改密码</a>
+          </li>
+          <!-- <li nz-menu-item>
+            <a><i nz-icon type="setting" style="margin-right: 10px;"></i>个人设置</a>
+          </li> -->
+          <li nz-menu-divider></li>
+          <li nz-menu-item (click)="appexit()">
+            <a><i nz-icon type="logout" style="margin-right: 10px;"></i>退出</a>
+          </li>
+        </ul>
+      </nz-dropdown>
+    </nz-header>
+    <nz-content style="margin:0 16px; display: flex; flex-direction: column;">
+      <nz-breadcrumb style="margin:16px 0;">
+        <nz-breadcrumb-item *ngFor="let item of breadcrumbs">
+          <a *ngIf="item.url" class="linka" [routerLink]="item.url">{{item.label}}</a>
+          <span *ngIf="!item.url">{{item.label}}</span>
+        </nz-breadcrumb-item>
+      </nz-breadcrumb>
+      <div style="padding:20px; background: #fff; flex: 1; margin-bottom: 16px;">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+  </nz-layout>
+</nz-layout>
+<ng-template #trigger>
+  <i nz-icon type="up"></i>
+</ng-template>

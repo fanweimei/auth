@@ -1,0 +1,935 @@
+swagger: "2.0"
+
+# 基本信息
+info:
+  title: 接口文档
+  description: 后台系统权限管理接口文档.
+  termsOfService: /terms/
+  contact:
+    name: 范伟梅
+    url: /fanweimei
+    email: 1309455832@qq.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1
+
+# 支持的协议
+schemes:
+ - http
+
+host: 127.0.0.1:7001
+basePath: /
+
+ # 标签，可以自动分组
+tags:
+ - name: user
+   description: 用户管理
+ - name: role
+   description: 角色管理
+ - name: menu
+   description: 菜单管理（资源管理）
+
+paths:
+  /user:
+    get:
+      tags:
+        - user
+      summary: 分页获取用户数据
+      parameters:
+        - $ref: "#/parameters/page"
+        - $ref: "#/parameters/pageSize"
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              allOf:
+                - $ref: "#/definitions/Paging"
+                - properties:
+                    items:
+                      type: array
+                      minItems: 10
+                      maxItems: 100
+                      uniqueItems: true
+                      items:
+                        $ref: "#/definitions/User"
+    post:
+      tags:
+        - user
+      summary: 创建用户
+      parameters:
+        - name: username
+          in: body
+          required: true
+          description: 用户名
+          type: string
+        - name: password
+          in: body
+          required: true
+          description: 密码
+          type: string
+        - name: startDate
+          in: body
+          required: false
+          description: 生效开始时间
+          type: string
+          format: 'date'
+        - name: endDate
+          in: body
+          required: false
+          description: 生效结束时间
+          type: string
+          format: 'date'
+        - name: realname
+          in: body
+          required: false
+          description: 姓名
+          type: string
+        - name: status
+          in: body
+          required: false
+          description: 状态 1有效 0无效
+          type: integer
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 创建用户数量
+  /user/{id}:
+    put:
+      tags:
+        - user
+      summary: 更新用户信息
+      parameters:
+          - name: username
+            in: body
+            required: true
+            description: 用户名
+            type: string
+          - name: password
+            in: body
+            required: true
+            description: 密码
+            type: string
+          - name: startDate
+            in: body
+            required: false
+            description: 生效开始时间
+            type: string
+            format: 'date'
+          - name: endDate
+            in: body
+            required: false
+            description: 生效结束时间
+            type: string
+            format: 'date'
+          - name: realname
+            in: body
+            required: false
+            description: 姓名
+            type: string
+          - name: status
+            in: body
+            required: false
+            description: 状态 1有效 0无效
+            type: integer
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 更新用户数量
+    delete:
+      tags:
+        - user
+      summary: 删除用户
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: integer
+              description: 删除用户数量 
+  /user/listall:
+    get:
+      tags:
+        - user
+      summary: 获取所有用户列表
+      description: 获取所有用户列表
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: "#/definitions/User"
+  /user/login:
+    post:
+      tags:
+        - user
+      summary: 用户登录
+      description: 用户登录，成功登录后，token放在header中返回
+      parameters:
+        - name: username
+          in: body
+          required: true
+          description: 用户名
+          type: string
+        - name: password
+          in: body
+          required: true
+          description: 密码
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          schema:
+             properties:
+              code:
+                type: string
+                description: 状态码 0成功 -1用户名或密码错误 -2该用户无效
+              message:
+                type: string
+                description: 消息提示  
+              result:
+                type: object
+                description: 数据体
+                properties:
+                  user:
+                    properties:
+                      id:
+                        type: integer
+                        description: 用户id
+                      name:
+                        type: string
+                        description: 用户名
+                  menus:
+                    type: array
+                    uniqueItems: true
+                    items:
+                      $ref: "#/definitions/Menu"
+  /user/v1/verify:
+    get:
+      tags:
+        - user
+      summary: 校验token
+      description: 校验token token需要放在header里
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1token值不存在 1账号在其它地方登录过
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: string
+              description: token值
+  /user/unique:
+    post:
+      tags:
+        - user
+      summary: 唯一性校验
+      description: 验证用户名或邮箱的唯一性
+      parameters:
+        - name: field
+          in: body
+          required: true
+          description: 校验用户名username 校验邮箱email
+          type: string
+        - name: value
+          in: body
+          required: true
+          description: 校验的值
+          type: string
+        - name: id
+          in: body
+          required: true
+          description: 被校验的用户id
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: boolean
+              description: 用户名或邮箱是否唯一，是唯一的true
+  /user/modifypass:
+    post:
+      tags:
+        - user
+      summary: 修改用户密码
+      description: 修改用户密码
+      parameters:
+        - name: username
+          in: body
+          required: true
+          description: 用户名
+          type: string
+        - name: oldpass
+          in: body
+          required: true
+          description: 旧密码
+          type: string
+        - name: newpass
+          in: body
+          required: true
+          description: 新密码
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: integer
+              description: 被修改的数量
+  /user/token:
+    delete:
+      tags:
+        - user
+      summary: 删除用户token
+      description: 手动删除用户token值
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: 用户id
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+  /role:
+    get:
+      tags:
+        - role
+      summary: 分页获取角色数据
+      parameters:
+        - $ref: "#/parameters/page"
+        - $ref: "#/parameters/pageSize"
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              allOf:
+                - $ref: "#/definitions/Paging"
+                - properties:
+                    items:
+                      type: array
+                      minItems: 10
+                      maxItems: 100
+                      uniqueItems: true
+                      items:
+                        $ref: "#/definitions/Role"
+    post:
+      tags:
+        - role
+      summary: 创建角色
+      parameters:
+        - name: name
+          in: body
+          required: true
+          description: 角色名
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 创建角色数量
+  /role/{id}:
+    put:
+      tags:
+        - role
+      summary: 更新角色信息
+      parameters:
+          - name: name
+            in: body
+            required: true
+            description: 角色名
+            type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 更新角色数量
+    delete:
+      tags:
+        - role
+      summary: 删除角色
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: integer
+              description: 删除角色数量 
+  /role/unique:
+    post:
+      tags:
+        - role
+      summary: 唯一性校验
+      description: 验证角色名的唯一性
+      parameters:
+        - name: value
+          in: body
+          required: true
+          description: 校验的值
+          type: string
+        - name: id
+          in: body
+          required: true
+          description: 被校验的角色id
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: boolean
+              description: 角色名是否唯一，是唯一的true
+  /role/setusers:
+    post:
+      tags:
+        - role
+      summary: 给角色指派用户
+      description: 给角色指派用户
+      parameters:
+        - name: roleId
+          in: body
+          required: true
+          description: 角色Id
+          type: integer
+        - name: userIds
+          in: body
+          required: true
+          description: 用户id数组
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                description: 用户id
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: object
+              description: 当前角色
+  /role/getusers:
+    get:
+      tags:
+        - role
+      summary: 获取角色的用户列表
+      description: 获取角色的用户列表
+      parameters:
+        - name: roleId
+          in: query
+          required: true
+          description: 角色Id
+          type: integer
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: array
+              description: 用户列表
+              uniqueItems: true
+              items:
+                $ref: "#/definitions/User"
+  /role/setmenus:
+    post:
+      tags:
+        - role
+      summary: 给角色设置权限
+      description: 给角色设置权限
+      parameters:
+        - name: roleId
+          in: body
+          required: true
+          description: 角色Id
+          type: integer
+        - name: menuIds
+          in: body
+          required: true
+          description: 资源id数组
+          type: array
+          items:
+            properties:
+              id:
+                type: integer
+                description: 资源id
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: object
+              description: 当前角色
+  /role/getmenus:
+    get:
+      tags:
+        - role
+      summary: 获取角色的资源列表
+      description: 获取角色的资源列表
+      parameters:
+        - name: roleId
+          in: query
+          required: true
+          description: 角色Id
+          type: integer
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: array
+              description: 资源列表
+              uniqueItems: true
+              items:
+                $ref: "#/definitions/Menu"
+  /menu:
+    get:
+      tags:
+        - menu
+      summary: 分页获取资源菜单数据
+      parameters:
+        - $ref: "#/parameters/page"
+        - $ref: "#/parameters/pageSize"
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              allOf:
+                - $ref: "#/definitions/Paging"
+                - properties:
+                    items:
+                      type: array
+                      minItems: 10
+                      maxItems: 100
+                      uniqueItems: true
+                      items:
+                        $ref: "#/definitions/Menu"
+    post:
+      tags:
+        - menu
+      summary: 创建菜单
+      parameters:
+        - name: name
+          in: body
+          required: true
+          description: 菜单名
+          type: string
+        - name: type
+          in: body
+          required: true
+          description: 类型
+          type: string
+        - name: key
+          in: body
+          required: true
+          description: 标识符
+          type: string
+          format: 'date'
+        - name: sequence
+          in: body
+          required: false
+          description: 序列号
+          type: integer
+          format: 'date'
+        - name: icon
+          in: body
+          required: false
+          description: 对应的图标
+          type: string
+        - name: routepath
+          in: body
+          required: false
+          description: 路由路径
+          type: string
+        - name: remark
+          in: body
+          required: false
+          description: 备注
+          type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 创建菜单数量
+  /menu/{id}:
+    put:
+      tags:
+        - menu
+      summary: 更新菜单信息
+      parameters:
+          - name: name
+            in: body
+            required: true
+            description: 菜单名
+            type: string
+          - name: type
+            in: body
+            required: true
+            description: 类型
+            type: string
+          - name: key
+            in: body
+            required: true
+            description: 标识符
+            type: string
+            format: 'date'
+          - name: sequence
+            in: body
+            required: false
+            description: 序列号
+            type: integer
+            format: 'date'
+          - name: icon
+            in: body
+            required: false
+            description: 对应的图标
+            type: string
+          - name: routepath
+            in: body
+            required: false
+            description: 路由路径
+            type: string
+          - name: remark
+            in: body
+            required: false
+            description: 备注
+            type: string
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示
+            result:
+              type: integer
+              description: 更新菜单数量
+    delete:
+      tags:
+        - menu
+      summary: 删除菜单
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: integer
+              description: 删除菜单数量 
+  /menu/listall:
+    get:
+      tags:
+        - menu
+      summary: 获取所有菜单列表
+      description: 获取所有菜单列表
+      responses:
+        200:
+          description: 请求成功
+          properties:
+            code:
+              type: string
+              description: 状态码 0成功 -1失败
+            message:
+              type: string
+              description: 消息提示  
+            result:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: "#/definitions/Menu"
+
+# 定义可以重用的参数
+parameters:
+  id:
+    name: id
+    in: path
+    required: true
+    description: id
+    type: number
+  userId:
+    name: userId
+    in: path
+    required: true
+    description: 用户id
+    type: number
+  pageSize:
+    name: pageSize
+    in: query
+    description: 每页大小
+    type: integer
+    default: 10
+  page:
+    name: page
+    in: query
+    description: 页码
+    type: integer
+    format: int32
+    minimum: 0
+    exclusiveMinimum: true
+    maximum: 100
+    exclusiveMaximum: false
+    multipleOf: 10
+    default: 1
+# 定义 definitions 模型 项 一般首字母大写
+definitions:
+  Status:
+    properties:
+      status:
+        type: number
+        description: 状态 0 成功 -1 失败
+  Paging:
+    properties:
+      totalItems:
+        description: 总数
+        type: integer
+      totalPages:
+        description: 总页数
+        type: integer
+      pageSize:
+        description: 每页大小
+        type: integer
+      currentPage:
+        description: 当前页码
+        type: integer
+  Error:
+    properties:
+      code:
+        type: string
+        description: 状态码
+      message:
+        type: string
+        description: 错误信息
+  User:
+    properties:
+      id:
+        type: integer
+        description: 用户id
+      username:
+        type: string
+        description: 用户名（唯一）
+      password:
+        type: string
+        description: 用户密码
+      avatarUrl:
+        type: string
+        description: 用户头像
+      email:
+        type: string
+        description: 用户邮箱
+      startDate:
+        type: string
+        format: 'date'
+        description: 生效时间
+      endDate:
+        type: string
+        format: 'date'
+        description: 失效时间
+      status:
+        type: integer
+        description: 用户状态 1有效 0无效
+  Users:
+    allOf:
+      - $ref: "#/definitions/Paging"
+      - properties:
+          items:
+            type: array
+            minItems: 10
+            maxItems: 100
+            uniqueItems: true
+            items:
+              $ref: "#/definitions/User"
+  Role:
+    properties:
+      id:
+        type: integer
+        description: 角色id
+      name:
+        type: string
+        description: 角色名（唯一）
+  Menu:
+    properties:
+      id:
+        type: integer
+        description: 用户id
+      name:
+        type: string
+        description: 资源名
+      type:
+        type: string
+        description: 资源类型 模块module 页面page 功能点fn
+      key:
+        type: string
+        description: 标识符 通过标识符来识别资源 同一父级下标识符是唯一的
+      sequence:
+        type: integer
+        description: 序列号
+      icon:
+        type: string
+        description: 菜单图标
+      routepath:
+        type: string
+        description: 路由路径
+      remark:
+        type: string
+        description: 备注
+# 定义可重用的响应消息体
+responses:
+  SuccessResponse:
+    properties:
+      code:
+        type: string
+        description: 状态码 0成功 -1失败
+      message:
+        type: string
+        description: 消息提示
+  Standard500ErrorResponse:
+    description: 500 服务器错误.
+    schema:
+      $ref: "#/definitions/Error"
+  PersonDoesNotExistResponse:
+    description: 没找到该用户.

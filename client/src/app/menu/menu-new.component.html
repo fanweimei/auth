@@ -1,0 +1,75 @@
+<form nz-form [formGroup]="vForm" (ngSubmit)="submitForm($event,vForm.value)" novalidate style="border: none;">
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6" nzRequired>名称</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="name" placeholder="菜单名/模块名/功能点">
+            <nz-form-explain *ngIf="vForm.get('name').dirty && vForm.get('name').errors ">
+                此字段不能为空
+            </nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6" nzRequired>标识符</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="key" placeholder="key值，同一父级下的元素key值不能相同，eg DELETE">
+            <nz-form-explain *ngIf="vForm.get('key').dirty && vForm.get('key').errors ">
+                <ng-container *ngIf="vForm.get('key').hasError('required')">
+                    此字段不能为空
+                </ng-container>
+                <ng-container *ngIf="vForm.get('key').hasError('sameKey')">
+                    同一父级目录下不能存在两个元素相同的key值
+                </ng-container>
+            </nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item *ngIf="type!='fn'" nzFlex>
+        <nz-form-label [nzSpan]="6">图标</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="icon" placeholder="图标">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6">序号</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="sequence" placeholder="序号">
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6">前端路由</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="routepath" placeholder="页面路由路径">
+            <nz-form-explain>
+                使用绝对路径（eg：菜单路径为/manager/auth/menu）
+            </nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6">备注</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="remark" placeholder="备注">
+            <!-- <nz-form-explain>
+                如果页面中设置了增删查改的权限，查看列表权限请注明view
+            </nz-form-explain> -->
+        </nz-form-control>
+    </nz-form-item>
+    <!-- <nz-form-item *ngIf="type=='module'" nzFlex>
+        <nz-form-label [nzSpan]="6">模块路径</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="modulepath" placeholder="相对或绝对路径">
+            <nz-form-explain>
+                如: ./auth/auth.module 或 app/manager/auth/auth.module
+            </nz-form-explain>
+        </nz-form-control>
+    </nz-form-item>
+    <nz-form-item nzFlex>
+        <nz-form-label [nzSpan]="6">类名</nz-form-label>
+        <nz-form-control [nzSpan]="16" nzHasFeedback>
+            <input type="text" nz-input formControlName="classname" placeholder="模块类名/组件类名">
+        </nz-form-control>
+    </nz-form-item> -->
+    <nz-form-item nzFlex>
+        <nz-form-control [nzSpan]="16" nzOffset="6">
+            <button nz-button nzType="primary" [disabled]="!vForm.valid">提交</button>
+        </nz-form-control>
+    </nz-form-item>
+</form>

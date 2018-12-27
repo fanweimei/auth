@@ -1,0 +1,50 @@
+<div class="logo_main">
+  <div class="navLeft">
+    <!-- <div class="font t_c">C</div> -->
+    <div class="font t_r">C</div>
+    <!-- <div class="font t_a">
+      <img src="./assets/images/cert.png" alt="" />
+    </div> -->
+    <div class="font t_a">M</div>
+    <div class="font t_t">S</div>
+    <!-- <div class="font t_m">S</div> -->
+  </div>
+  <div class="middle" style="display: block;">
+    <div class="login_title">
+      登录账号
+    </div>
+    <div class="m_main">
+      <form nz-form [formGroup]="validateForm" class="login-form" (ngSubmit)="submitForm($event, validateForm.value)">
+        <nz-form-item>
+          <nz-form-control>
+            <nz-input-group nzPrefixIcon="anticon anticon-user">
+              <input type="text" nz-input formControlName="username" placeholder="用户名">
+            </nz-input-group>
+            <nz-form-explain *ngIf="validateForm.get('username').dirty && validateForm.get('username').errors">请输入你的用户名</nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item class="pass-row">
+          <nz-form-control>
+            <nz-input-group nzPrefixIcon="anticon anticon-lock">
+              <input type="password" nz-input formControlName="password" placeholder="密码">
+            </nz-input-group>
+            <nz-form-explain *ngIf="validateForm.get('password').dirty && validateForm.get('password').errors">请输入你的密码</nz-form-explain>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-control>
+            <p>
+              <a class="form-link login-form-forgot">忘记密码</a>
+              <!-- <a class="form-link login-form-demo">demo</a> -->
+            </p>
+            <button nz-button class="login-form-button" [nzType]="'primary'" [disabled]="!validateForm.valid">登录</button>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </div>
+  </div>
+  <div class="footer">
+    <p>Powered by xxxx</p>
+    <p>©2017 所有版权归xxxx-xxxxx所有</p>
+  </div>
+</div>
